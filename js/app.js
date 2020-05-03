@@ -1,72 +1,40 @@
 "use strict";
 
-const quiz = {
-  title: "Насколько хорошо вы знаете народные пословицы?",
-  img: "https://i.ytimg.com/vi/71xs__dp6ag/maxresdefault.jpg",
-  lead:
-    "В повседневной речи мы часто прибегаем к пословицам и поговоркам, уходящим своими корнями далеко в прошлое. Но так ли хорошо мы знаем их на самом деле?",
-  questions: [
-    {
-      question: "Глаза на морком...",
-      answerA: "месте",
-      answerB: "лице",
-      answerC: "лбу",
-      answerD: "деле",
-      correctAnswer: "A",
-    },
-    {
-      question: "Говорят — хорош, а дела ни на ...",
-      answerA: "рубль",
-      answerB: "евро",
-      answerC: "грош",
-      answerD: "доллар",
-      correctAnswer: "C",
-    },
-    {
-      question: "Не то рыба, не то...",
-      answerA: "птица",
-      answerB: "самолет",
-      answerC: "супермен",
-      answerD: "НЛО",
-      correctAnswer: "A",
-    },
-    {
-      question: "Всяк Еремей про себя...",
-      answerA: "говорит",
-      answerB: "слушает",
-      answerC: "думает",
-      answerD: "разумей",
-      correctAnswer: "D",
-    },
-    {
-      question: "Не за бороду — за ум...",
-      answerA: "дергают",
-      answerB: "уважают",
-      answerC: "жалуют",
-      answerD: "респектуют",
-      correctAnswer: "C",
-    },
-  ],
-  results: [
-    "Зато наверняка хорошо владеете современным сленгом",
-    "Что-то слышали от бабушки",
-    "А не филолог ли вы, часом?",
-  ],
-};
+const API =
+  "https://raw.githubusercontent.com/sergesarapov/Quiz-a-la-kinopoisk/online/quiz.json";
 
 class Quiz {
-  constructor(quiz, container = ".quiz") {
-    this.title = quiz.title;
-    this.img = quiz.img;
-    this.lead = quiz.lead;
-    this.questions = quiz.questions;
-    this.totalQuestions = quiz.questions.length;
-    this.results = quiz.results;
+  constructor(api, container = ".quiz") {
+    this.title = "";
+    this.img = "";
+    this.lead = "";
+    this.questions = [];
+    this.totalQuestions = 0;
+    this.results = [];
     this.currentQuestion = 1;
     this.correctAnswers = 0;
     this.container = document.querySelector(`${container}`);
-    this._render(this.questions[0]);
-    this._init();
+    this._fetch(api);
+  }
+
+  _fetch(api) {
+    return fetch(api)
+      .then((response) => response.json())
+      .then((response) => {
+        this.title = response.title;
+        this.img = response.img;
+        this.lead = response.lead;
+        this.questions = response.questions;
+        this.totalQuestions = response.questions.length;
+        this.results = response.results;
+      })
+      .then(() => {
+        this._render(this.questions[0]);
+        this._init();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   _render(question) {
@@ -159,9 +127,9 @@ class Quiz {
     document.querySelector("section").innerHTML = block;
     let reload = document.querySelector(".reload");
     reload.addEventListener("click", (event) => {
-      new Quiz(quiz);
+      new Quiz(API);
     });
   }
 }
 
-new Quiz(quiz);
+new Quiz(API);
