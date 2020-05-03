@@ -76,7 +76,7 @@ h1 {
   border: 1px solid lightgrey;
   border-bottom: none;
   max-width: 500px;
-  height: 68px;
+  min-height: 68px;
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
